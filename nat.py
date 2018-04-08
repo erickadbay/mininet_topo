@@ -1,0 +1,28 @@
+#!/usr/bin/python
+
+"""
+Example to create a Mininet topology and connect it to the internet via NAT
+"""
+
+
+from mininet.cli import CLI
+from mininet.log import lg, info
+from mininet.topolib import TreeNet
+from mininet.node import RemoteController
+
+
+if __name__ == '__main__':
+    lg.setLogLevel( 'info')
+    net = TreeNet( 
+        depth=1, 
+        fanout=2, 
+        controller = RemoteController(name="ODL controller", ip = "192.168.56.10", port = 6633) 
+    )
+    # Add NAT connectivity
+    net.addNAT().configDefault()
+    net.start()
+    info( "*** Hosts are running and should have internet connectivity\n" )
+    info( "*** Type 'exit' or control-D to shut down network\n" )
+    CLI( net )
+    # Shut down NAT
+    net.stop()
